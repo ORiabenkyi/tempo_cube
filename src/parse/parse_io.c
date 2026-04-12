@@ -6,7 +6,7 @@
 /*   By: oriabenk <oriabenk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/12 10:23:48 by oriabenk          #+#    #+#             */
-/*   Updated: 2026/04/12 10:23:49 by oriabenk         ###   ########.fr       */
+/*   Updated: 2026/04/12 15:01:17 by oriabenk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,10 +29,10 @@ static void	gnl_drain(int fd)
 }
 
 /*
-** Grows lines array if needed, strips trailing newline, appends line.
-** Returns 0 on success, -1 on allocation failure (frees all and drains GNL).
+ Grows lines array if needed, strips trailing newline, appends line.
+ Returns 0 on success, -1 on allocation failure (frees all and drains GNL).
 */
-static int	add_line(char ***lines, char *line, int *count, int *cap, int fd)
+static int	add_line(char ***lines, char *line, int *count, int *cap)
 {
 	char	**tmp;
 	int		len;
@@ -45,7 +45,6 @@ static int	add_line(char ***lines, char *line, int *count, int *cap, int fd)
 		{
 			free(line);
 			free_array(*lines);
-			gnl_drain(fd);
 			return (-1);
 		}
 		ft_memcpy(tmp, *lines, sizeof(char *) * (*count));
@@ -77,8 +76,11 @@ char	**read_all_lines(int fd, int *count)
 	line = get_next_line(fd);
 	while (line)
 	{
-		if (add_line(&lines, line, count, &cap, fd) == -1)
+		if (add_line(&lines, line, count, &cap) == -1)
+		{
+			gnl_drain(fd);
 			return (NULL);
+		}
 		line = get_next_line(fd);
 	}
 	return (lines);

@@ -6,21 +6,25 @@
 /*   By: oriabenk <oriabenk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/12 10:24:55 by oriabenk          #+#    #+#             */
-/*   Updated: 2026/04/12 10:24:56 by oriabenk         ###   ########.fr       */
+/*   Updated: 2026/04/12 16:39:32 by oriabenk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cube3d.h"
 
 /*
-** Fills a rectangle [px, px+w) x [py, py+h) with color on game->image.
-** Clips to screen bounds.
+ Fills a rectangle [px, px+w] x [py, py+h] with color on game->image.
+ Clips to screen bounds.
 */
-void	draw_rect(t_game *game, int px, int py, int w, int h, uint32_t col)
+void	draw_rect(t_game *game, int px, int py, t_mctx *c, uint32_t col)
 {
 	int	x;
 	int	y;
+	int	w;
+	int	h;
 
+	w = c->cz - 1;
+	h = c->cz - 1;
 	y = py;
 	while (y < py + h)
 	{
@@ -35,14 +39,37 @@ void	draw_rect(t_game *game, int px, int py, int w, int h, uint32_t col)
 	}
 }
 
+void	draw_mini_player(t_game *game, int px, int py, uint32_t col)
+{
+	int	w;
+	int	h;
+	int	x;
+	int	y;
+
+	w = 3;
+	h = 3;
+	y = py;
+	while (y < py + h)
+	{
+		x = px;
+		while (x < px + w)
+		{
+			if (x >= 0 && x < SCREEN_W && y >= 0 && y < SCREEN_H)
+				mlx_put_pixel(game->image, x, y, col);
+			x++;
+		}
+		y++;
+	}
+}
 /*
-** Returns the color for a single map cell for the minimap.
-**   '1'        → dark grey (wall)
-**   'D' closed → brown
-**   'D' open   → gold
-**   ' '        → transparent black
-**   other      → medium grey (floor / player spawn)
+ Returns the color for a single map cell for the minimap.
+   '1'        → dark grey (wall)
+   'D' closed → brown
+   'D' open   → gold
+   ' '        → transparent black
+   other      → medium grey (floor / player spawn)
 */
+
 uint32_t	cell_color(t_game *game, int mx, int my)
 {
 	char	c;

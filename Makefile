@@ -18,17 +18,20 @@ CFILES =	src/cube3d.c \
 			src/parse/parse_io.c \
 			src/parse/parse_header.c \
 			src/parse/parse_feel_1u.c \
-			src/parse/parse_map.c \
+			src/parse/parse_feel_2u.c \
 			src/parse/validate_map.c \
 			src/parse/parse_grid.c \
 			src/parse/parse_utils.c \
 			src/game/game_init.c \
+			src/game/cleanup.c \
 			src/game/init_player.c \
 			src/game/game_loop.c \
 			src/game/can_move.c \
 			src/game/handle_keys.c \
 			src/game/raycast.c \
-			src/game/raycast_dda.c \
+			src/game/init_ray.c \
+			src/game/dda.c \
+			src/game/calc_wall.c \
 			src/game/move.c \
 			src/game/find_door.c \
 			src/game/interact_door.c \
@@ -36,6 +39,7 @@ CFILES =	src/cube3d.c \
 	        src/game/player_in_door.c \
 			src/game/minimap.c \
 			src/game/minimap_utils.c \
+			src/game/draw_info_line.c \
 			src/game/player_info.c
 
 OFILES = $(CFILES:.c=.o)

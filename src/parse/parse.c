@@ -6,7 +6,7 @@
 /*   By: oriabenk <oriabenk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/12 10:23:16 by oriabenk          #+#    #+#             */
-/*   Updated: 2026/04/12 11:10:58 by oriabenk         ###   ########.fr       */
+/*   Updated: 2026/04/12 14:07:52 by oriabenk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,26 +15,26 @@
 /*
  Processes one line from all_lines at index i.
  Returns: 1 = map section ended (break), 0 = continue, -1 = error.
+ al = all_lines
 */
-static int	process_line(t_map *map, char **all_lines, int total,
-	char ***ml, int *mc, int *mcap, int *in_map, int i)
+static int	process_line(t_map *map, char **al, char ***ml, int i)
 {
-	if (is_empty_line(all_lines[i]))
+	if (is_empty_line(al[i]))
 	{
-		if (!*in_map)
+		if (!map->in_map)
 			return (0);
-		if (check_no_content_after(all_lines, total, i + 1) == -1)
+		if (check_no_content_after(al, map->total, i + 1) == -1)
 			return (-1);
 		return (1);
 	}
-	if (*in_map || is_map_line(all_lines[i]))
+	if (map->in_map || is_map_line(al[i]))
 	{
-		*in_map = 1;
-		if (append_map_line(ml, mc, mcap, all_lines[i]) == -1)
+		map->in_map = 1;
+		if (append_map_line(ml, &map->map_count, &map->map_cap, al[i]) == -1)
 			return (ft_error(ERR_MEM));
 		return (0);
 	}
-	if (parse_header_line(map, all_lines[i]) == -1)
+	if (parse_header_line(map, al[i]) == -1)
 		return (-1);
 	return (0);
 }
@@ -54,48 +54,46 @@ static int	parse_cleanup(char **all, char **ml, t_map *map)
 /*
  Iterates all lines, dispatching each to header parsing or map collection.
  Returns the number of map lines collected, or -1 on error.
+ mlo = map_lines_out 
+
+ Проходить по всіх рядках, направляючи кожен із них на аналіз заголовка або
+ до колекції мап.
+ Повертає кількість зібраних рядків мап або -1 у разі помилки.
 */
-static int	collect_lines(t_map *map, char **all_lines, int total,
-	char ***map_lines_out)
+static int	collect_lines(t_map *map, char **all_lines,	char ***mlo)
 {
 	char	**map_lines;
-	int		map_count, map_cap, in_map, i, ret;
+	int		i;
+	int		ret;
 
-	in_map = 0;
-	map_count = 0;
-	map_cap = 32;
-	map_lines = ft_calloc(map_cap, sizeof(char *));
+	map->map_cap = 32;
+	map_lines = ft_calloc(map->map_cap, sizeof(char *));
 	if (!map_lines)
 		return (ft_error(ERR_MEM));
-	i = 0;
-	while (i < total)
+	i = -1;
+	while (++i < map->total)
 	{
-		ret = process_line(map, all_lines, total,
-				&map_lines, &map_count, &map_cap, &in_map, i);
+		ret = process_line(map, all_lines, &map_lines, i);
 		if (ret == -1)
-		{
-			free(map_lines);
-			return (-1);
-		}
+			return (free(map_lines), -1);
 		if (ret == 1)
 			break ;
-		i++;
 	}
-	*map_lines_out = map_lines;
-	return (map_count);
+	*mlo = map_lines;
+	return (map->map_count);
 }
 
 /*
  Runs collect, validates headers, builds grid and validates map.
  Frees temporary buffers on failure; keeps map->grid on success.
 */
-static int	do_parse(t_map *map, char **all_lines, int total)
+static int	do_parse(t_map *map, char **all_lines)
 {
 	char	**map_lines;
 	int		map_count;
 
 	map_lines = NULL;
-	map_count = collect_lines(map, all_lines, total, &map_lines);
+	map_count = collect_lines(map, all_lines, &map_lines);
 	if (map_count == -1)
 		return (parse_cleanup(all_lines, map_lines, map));
 	if (headers_complete(map) == -1 || map_count == 0)
@@ -133,5 +131,6 @@ int	parse_file(t_game *game, char *path)
 	if (!all_lines)
 		return (ft_error(ERR_MEM));
 	ft_bzero(&game->map, sizeof(t_map));
-	return (do_parse(&game->map, all_lines, total));
+	game->map.total = total;
+	return (do_parse(&game->map, all_lines));
 }

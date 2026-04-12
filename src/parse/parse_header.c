@@ -6,15 +6,15 @@
 /*   By: oriabenk <oriabenk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/12 10:23:41 by oriabenk          #+#    #+#             */
-/*   Updated: 2026/04/12 11:34:08 by oriabenk         ###   ########.fr       */
+/*   Updated: 2026/04/12 13:42:15 by oriabenk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cube3d.h"
 
 /*
-** Validates that str contains only digits (and leading spaces).
-** Used to reject values like "9abc" or "" before ft_atoi.
+ Validates that str contains only digits (and leading spaces).
+ Used to reject values like "9abc" or "" before ft_atoi.
 */
 static int	is_valid_uint(char *s)
 {
@@ -32,8 +32,8 @@ static int	is_valid_uint(char *s)
 }
 
 /*
-** Parses a color string of the form "R,G,B" into t_color.
-** Returns 0 on success, -1 on any format or range error.
+ Parses a color string of the form "R,G,B" into t_color.
+ Returns 0 on success, -1 on any format or range error.
 */
 int	parse_color(char *str, t_color *c)
 {
@@ -64,54 +64,24 @@ int	parse_color(char *str, t_color *c)
 }
 
 /*
-** Parses a single header line and stores the result in map.
-** Handles: NO, SO, WE, EA (texture paths), F and C (colors).
-** Returns 0 on success, -1 on error.
+ Parses a single header line and stores the result in map.
+ Handles: NO, SO, WE, EA (texture paths), F and C (colors).
+ Returns 0 on success, -1 on error.
 */
 int	parse_header_line(t_map *map, char *line)
 {
 	while (*line == ' ' || *line == '\t')
 		line++;
 	if (!ft_strncmp(line, "NO ", 3))
-	{
-		if (map->no)
-			return (ft_error("Duplicate NO field"));
-		map->no = ft_strtrim(line + 3, " \t");
-		if (!map->no || !*map->no)
-			return (ft_error("NO: missing texture path"));
-	}
+		return (parse_feel_north(map, line + 3));
 	else if (!ft_strncmp(line, "SO ", 3))
-	{
-		if (map->so)
-			return (ft_error("Duplicate SO field"));
-		map->so = ft_strtrim(line + 3, " \t");
-		if (!map->so || !*map->so)
-			return (ft_error("SO: missing texture path"));
-	}
+		return (parse_feel_south(map, line + 3));
 	else if (!ft_strncmp(line, "WE ", 3))
-	{
-		if (map->we)
-			return (ft_error("Duplicate WE field"));
-		map->we = ft_strtrim(line + 3, " \t");
-		if (!map->we || !*map->we)
-			return (ft_error("WE: missing texture path"));
-	}
+		return (parse_feel_west(map, line + 3));
 	else if (!ft_strncmp(line, "EA ", 3))
-	{
-		if (map->ea)
-			return (ft_error("Duplicate EA field"));
-		map->ea = ft_strtrim(line + 3, " \t");
-		if (!map->ea || !*map->ea)
-			return (ft_error("EA: missing texture path"));
-	}
+		return (parse_feel_east(map, line + 3));
 	else if (!ft_strncmp(line, "F ", 2))
-	{
-		if (map->has_floor)
-			return (ft_error("Duplicate F (floor color) field"));
-		if (parse_color(line + 2, &map->floor) == -1)
-			return (ft_error(ERR_COLOR));
-		map->has_floor = 1;
-	}
+		return (parse_feel_floor(map, line + 2));
 	else if (!ft_strncmp(line, "C ", 2))
 		return (parse_feel_ceiling(map, line + 2));
 	else
@@ -119,10 +89,9 @@ int	parse_header_line(t_map *map, char *line)
 	return (0);
 }
 
-
 /*
-** Checks that all 6 required header fields were found.
-** Returns 0 if complete, -1 with error message if not.
+ Checks that all 6 required header fields were found.
+ Returns 0 if complete, -1 with error message if not.
 */
 int	headers_complete(t_map *map)
 {

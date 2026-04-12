@@ -6,17 +6,17 @@
 /*   By: oriabenk <oriabenk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/12 10:24:53 by oriabenk          #+#    #+#             */
-/*   Updated: 2026/04/12 10:50:30 by oriabenk         ###   ########.fr       */
+/*   Updated: 2026/04/12 15:11:13 by oriabenk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cube3d.h"
 
 /*
-** Computes the minimap context.
-** Cell size starts at MINI_CELL and shrinks until the map fits in MINI_MAX.
-** Origin is placed so the right edge is MINI_MARGIN px from screen right,
-** and the top edge is MINI_MARGIN px from screen top.
+ Computes the minimap context.
+ Cell size starts at MINI_CELL and shrinks until the map fits in MINI_MAX.
+ Origin is placed so the right edge is MINI_MARGIN px from screen right,
+ and the top edge is MINI_MARGIN px from screen top.
 */
 static t_mctx	make_ctx(t_game *game)
 {
@@ -31,11 +31,15 @@ static t_mctx	make_ctx(t_game *game)
 	c.cz = cz;
 	c.ox = SCREEN_W - MINI_MARGIN - game->map.cols * cz;
 	c.oy = MINI_MARGIN;
+	c.px = 0;
+	c.py = 0;
+	c.ex = 0;
+	c.ey = 0;
 	return (c);
 }
 
 /*
-** Draws every cell of the map grid as a filled rectangle.
+ Draws every cell of the map grid as a filled rectangle.
 */
 static void	draw_cells(t_game *game, t_mctx *c)
 {
@@ -53,8 +57,7 @@ static void	draw_cells(t_game *game, t_mctx *c)
 			draw_rect(game,
 				c->ox + mx * c->cz,
 				c->oy + my * c->cz,
-				c->cz - 1,
-				c->cz - 1,
+				c,
 				cell_color(game, mx, my));
 			mx++;
 		}
@@ -63,31 +66,26 @@ static void	draw_cells(t_game *game, t_mctx *c)
 }
 
 /*
-** Draws the player as a 3x3 red dot and a short white direction line.
+ Draws the player as a 3x3 red dot and a short white direction line.
 */
 static void	draw_player(t_game *game, t_mctx *c)
 {
 	t_player	*p;
-	int			px;
-	int			py;
 	int			i;
-	int			ex;
-	int			ey;
+	int			lx;
+	int			ly;
 
 	p = &game->player;
-	px = c->ox + (int)(p->pos_x * c->cz);
-	py = c->oy + (int)(p->pos_y * c->cz);
-	draw_rect(game, px - 1, py - 1, 3, 3, 0xFF0000FF);
-	ex = px + (int)(p->dir_x * c->cz * 1.5);
-	ey = py + (int)(p->dir_y * c->cz * 1.5);
+	c->px = c->ox + (int)(p->pos_x * c->cz);
+	c->py = c->oy + (int)(p->pos_y * c->cz);
+	draw_mini_player(game, c->px - 1, c->py - 1, 0xFF0000FF);
+	c->ex = c->px + (int)(p->dir_x * c->cz * 1.5);
+	c->ey = c->py + (int)(p->dir_y * c->cz * 1.5);
 	i = 0;
 	while (i <= c->cz)
 	{
-		int	lx;
-		int	ly;
-
-		lx = px + (ex - px) * i / c->cz;
-		ly = py + (ey - py) * i / c->cz;
+		lx = c->px + (c->ex - c->px) * i / c->cz;
+		ly = c->py + (c->ey - c->py) * i / c->cz;
 		if (lx >= 0 && lx < SCREEN_W && ly >= 0 && ly < SCREEN_H)
 			mlx_put_pixel(game->image, lx, ly, 0xFFFFFFFF);
 		i++;
@@ -95,7 +93,7 @@ static void	draw_player(t_game *game, t_mctx *c)
 }
 
 /*
-** Draws the minimap in the top-right corner if show_minimap is set.
+ Draws the minimap in the top-right corner if show_minimap is set.
 */
 void	draw_minimap(t_game *game)
 {

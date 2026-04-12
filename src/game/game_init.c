@@ -6,7 +6,7 @@
 /*   By: oriabenk <oriabenk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/12 10:25:13 by oriabenk          #+#    #+#             */
-/*   Updated: 2026/04/12 11:19:33 by oriabenk         ###   ########.fr       */
+/*   Updated: 2026/04/12 12:01:53 by oriabenk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,45 +33,6 @@ static int	load_textures(t_game *game)
 		|| !game->tex[TEX_WE] || !game->tex[TEX_EA])
 		return (ft_error(ERR_TEX));
 	return (0);
-}
-
-/*
-** Frees all MLX resources and the parsed map.
-** NULL-ifies every pointer after release to make double-call safe.
-** Order: textures → image → mlx context → map.
-** Textures are external resources; mlx_terminate does NOT free them.
-** mlx_delete_image must come before mlx_terminate.
-*/
-void	cleanup(t_game *game)
-{
-	int	i;
-
-	i = 0;
-	while (i < 4)
-	{
-		if (game->tex[i])
-		{
-			mlx_delete_texture(game->tex[i]);
-			game->tex[i] = NULL;
-		}
-		i++;
-	}
-	if (game->image && game->mlx)
-	{
-		mlx_delete_image(game->mlx, game->image);
-		game->image = NULL;
-	}
-	if (game->info_img && game->mlx)
-	{
-		mlx_delete_image(game->mlx, game->info_img);
-		game->info_img = NULL;
-	}
-	if (game->mlx)
-	{
-		mlx_terminate(game->mlx);
-		game->mlx = NULL;
-	}
-	free_map(&game->map);
 }
 
 /*

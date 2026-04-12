@@ -6,38 +6,16 @@
 /*   By: oriabenk <oriabenk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/12 10:24:41 by oriabenk          #+#    #+#             */
-/*   Updated: 2026/04/12 10:24:44 by oriabenk         ###   ########.fr       */
+/*   Updated: 2026/04/12 16:38:24 by oriabenk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cube3d.h"
-#include <string.h>
 
-# define CHAR_W   10
-# define CHAR_H   20
-# define INFO_W   260
-# define INFO_IMG_H (INFO_LINES * CHAR_H)
-
-/*
-** Converts a double to a compact string: [-]NNN.NN (two decimal places).
-*/
-static void	dbl_to_buf(double v, char *buf)
+static void	int_to_buf(int neg, int ip, int fp, char *buf)
 {
-	int	neg;
-	int	ip;
-	int	fp;
 	int	i;
 
-	neg = (v < 0.0);
-	if (neg)
-		v = -v;
-	ip = (int)v;
-	fp = (int)((v - ip) * 100.0 + 0.5);
-	if (fp >= 100)
-	{
-		fp -= 100;
-		ip++;
-	}
 	i = 0;
 	if (neg)
 		buf[i++] = '-';
@@ -53,11 +31,34 @@ static void	dbl_to_buf(double v, char *buf)
 }
 
 /*
-** Builds one info line into buf (max 64 bytes).
-**   idx 0 → "pos  x:<val>  y:<val>"
-**   idx 1 → "dir  x:<val>  y:<val>"
-**   idx 2 → "pln  x:<val>  y:<val>"
+ Converts a double to a compact string: [-]NNN.NN (two decimal places).
+ small double less INT_MAX / 100. If somebody want put inside #if
 */
+static void	dbl_to_buf(double v, char *buf)
+{
+	int	neg;
+	int	ip;
+	int	fp;
+
+	neg = (v < 0.0);
+	if (neg)
+		v = -v;
+	ip = (int)v;
+	fp = (int)((v - ip) * 100.0 + 0.5);
+	if (fp >= 100)
+	{
+		fp -= 100;
+		ip++;
+	}
+	int_to_buf(neg, ip, fp, buf);
+}
+
+/*
+ Builds one info line into buf (max 64 bytes).
+   idx 0 → "pos  x:<val>  y:<val>"
+   idx 1 → "dir  x:<val>  y:<val>"
+   idx 2 → "pln  x:<val>  y:<val>"
+
 static void	build_line(t_player *p, int idx, char *buf)
 {
 	char	vx[16];
@@ -89,45 +90,35 @@ static void	build_line(t_player *p, int idx, char *buf)
 	ft_strlcat(buf, "  y:", 64);
 	ft_strlcat(buf, vy, 64);
 }
-
-/*
-** Draws string str into image img at the given character row.
-** Copies glyph pixels from the font atlas using mlx_get_texoffset().
+	I'm tired of shortening it, so just one parameter
 */
-static void	draw_info_line(mlx_image_t *img, const mlx_texture_t *fnt,
-							const char *str, int row)
+static void	build_line(t_player *p, int idx, char *buf)
 {
-	int32_t		toff;
-	uint8_t		*dst;
-	const uint8_t	*src;
-	int			col;
-	int			y;
+	char	vx[16];
+	char	vy[16];
+	double	vxd;
+	double	vyd;
+	char	*label;
 
-	col = 0;
-	while (*str && col * CHAR_W < (int)img->width)
+	if (idx == 2)
 	{
-		toff = mlx_get_texoffset(*str);
-		if (toff >= 0)
-		{
-			y = 0;
-			while (y < CHAR_H)
-			{
-				src = fnt->pixels + (y * fnt->width + toff) * 4;
-				dst = img->pixels
-					+ ((row * CHAR_H + y) * img->width + col * CHAR_W) * 4;
-				memcpy(dst, src, CHAR_W * 4);
-				y++;
-			}
-		}
-		col++;
-		str++;
+		label = "pln";
+		vxd = p->plane_x;
+		vyd = p->plane_y;
+		dbl_to_buf(vxd, vx);
+		dbl_to_buf(vyd, vy);
+		ft_strlcpy(buf, label, 64);
+		ft_strlcat(buf, "  x:", 64);
+		ft_strlcat(buf, vx, 64);
+		ft_strlcat(buf, "  y:", 64);
+		ft_strlcat(buf, vy, 64);
 	}
 }
 
 /*
-** Called every frame. Updates the persistent info image when show_info is set.
-** Creates the image on first call; toggles visibility via enabled flag.
-*/
+ Called every frame. Updates the persistent info image when show_info is set.
+ Creates the image on first call; toggles visibility via enabled flag.
+
 void	draw_player_info(t_game *game)
 {
 	char				buf[64];
@@ -145,17 +136,45 @@ void	draw_player_info(t_game *game)
 		game->info_img = mlx_new_image(game->mlx, INFO_W, INFO_IMG_H);
 		if (!game->info_img)
 			return ;
-		if (mlx_image_to_window(game->mlx, game->info_img, INFO_X, INFO_Y) == -1)
+		if (mlx_image_to_window(game->mlx, game->info_img,
+				INFO_X, INFO_Y) == -1)
 			return ;
 	}
 	game->info_img->enabled = true;
 	memset(game->info_img->pixels, 0, INFO_W * INFO_IMG_H * 4);
 	fnt = mlx_get_font();
-	i = 0;
-	while (i < INFO_LINES)
+	i = -1;
+	while (++i < INFO_LINES)
 	{
 		build_line(&game->player, i, buf);
-		draw_info_line(game->info_img, fnt, buf, i);
-		i++;
+		dil(game->info_img, fnt, buf, i);
 	}
+}
+	*/
+
+void	draw_player_info(t_game *game)
+{
+	char				buf[64];
+	const mlx_texture_t	*fnt;
+
+	if (!game->show_info)
+	{
+		if (game->info_img)
+			game->info_img->enabled = false;
+		return ;
+	}
+	if (!game->info_img)
+	{
+		game->info_img = mlx_new_image(game->mlx, INFO_W, INFO_IMG_H);
+		if (!game->info_img)
+			return ;
+		if (mlx_image_to_window(game->mlx, game->info_img,
+				INFO_X, INFO_Y) == -1)
+			return ;
+	}
+	game->info_img->enabled = true;
+	ft_memset(game->info_img->pixels, 0, INFO_W * INFO_IMG_H * 4);
+	fnt = mlx_get_font();
+	build_line(&game->player, INFO_LINES - 1, buf);
+	dil(game->info_img, fnt, buf, INFO_LINES -1);
 }

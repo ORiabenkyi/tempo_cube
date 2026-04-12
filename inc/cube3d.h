@@ -6,7 +6,7 @@
 /*   By: oriabenk <oriabenk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/12 10:53:52 by oriabenk          #+#    #+#             */
-/*   Updated: 2026/04/12 11:28:14 by oriabenk         ###   ########.fr       */
+/*   Updated: 2026/04/12 16:37:10 by oriabenk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,13 @@
 # define INFO_LINES  3
 # define INFO_X      10
 # define INFO_Y      10
+# define CHAR_W   10
+# define CHAR_H   20
+# define INFO_W   260
+
+/*INFO_IMG_H  = INFO_LINES * CHAR_H */
+
+# define INFO_IMG_H 60
 
 /* ---------- Texture indices ---------- */
 # define TEX_NO     0
@@ -61,7 +68,7 @@
 # define ERR_MAP     "Missing map"
 # define ERR_PLAYER  "Map must have exactly one player spawn (N/S/E/W)"
 # define ERR_CLOSED  "Map is not surrounded by walls"
-# define ERR_CHAR    "Invalid character in map (only 0, 1, D, N, S, E, W, space)"
+# define ERR_CHAR    "Invalid character in map (use 0, 1, D, N, S, E, W, space)"
 # define ERR_MISS    "Missing required identifier (NO/SO/WE/EA/F/C)"
 # define ERR_AFTER   "Content not allowed after map"
 # define ERR_MEM     "Memory allocation failed"
@@ -71,8 +78,8 @@
 
 typedef enum e_door_state
 {
-	DOOR_CLOSED = 0,
-	DOOR_OPEN   = 1,
+	DOOR_CLOSED	= 0,
+	DOOR_OPEN	= 1,
 }	t_door_state;
 
 typedef struct s_door
@@ -112,6 +119,10 @@ typedef struct s_map
 	char		player_dir;
 	t_door		*doors;
 	int			door_count;
+	int			map_count;
+	int			map_cap;
+	int			in_map;
+	int			total;
 }	t_map;
 
 typedef struct s_mctx
@@ -119,6 +130,11 @@ typedef struct s_mctx
 	int	ox;
 	int	oy;
 	int	cz;
+	int	px;
+	int	py;
+	int	ex;
+	int	ey;
+
 }	t_mctx;
 
 /* ---------- Player ---------- */
@@ -188,6 +204,10 @@ int			is_empty_line(char *line);
 int			is_map_line(char *line);
 
 /* parser utils*/
+int			parse_feel_north(t_map *map, char *line);
+int			parse_feel_south(t_map *map, char *line);
+int			parse_feel_east(t_map *map, char *line);
+int			parse_feel_west(t_map *map, char *line);
 int			parse_feel_ceiling(t_map *map, char *line);
 int			parse_feel_floor(t_map *map, char *line);
 
@@ -235,13 +255,15 @@ t_door		*find_door(t_map *map, int x, int y);
 void		interact_door(t_game *game);
 
 /* minimap_utils.c */
-void		draw_rect(t_game *game, int px, int py, int w, int h, uint32_t col);
+void		draw_rect(t_game *game, int px, int py, t_mctx *c, uint32_t col);
+void		draw_mini_player(t_game *game, int px, int py, uint32_t col);
 uint32_t	cell_color(t_game *game, int mx, int my);
 
 /* minimap.c */
 void		draw_minimap(t_game *game);
 
-/* player_info.c */
+/* player_info */
 void		draw_player_info(t_game *game);
+void		dil(mlx_image_t *i, const mlx_texture_t *f, const char *s, int r);
 
 #endif

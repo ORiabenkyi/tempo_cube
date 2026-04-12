@@ -6,12 +6,11 @@
 /*   By: oriabenk <oriabenk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/12 10:23:55 by oriabenk          #+#    #+#             */
-/*   Updated: 2026/04/12 11:41:15 by oriabenk         ###   ########.fr       */
+/*   Updated: 2026/04/12 11:49:22 by oriabenk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cube3d.h"
-
 
 /*
 ** Returns the character at grid[y][x], or ' ' if out of bounds.
