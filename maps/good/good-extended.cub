@@ -1,0 +1,13 @@
+NO src/img/north.png
+SO src/img/south.png
+WE src/img/west.png
+EA src/img/east.png
+
+F 220,100,0
+C 225,30,0
+
+ 1111 
+100101
+10 001
+1 00N1
+111 11
