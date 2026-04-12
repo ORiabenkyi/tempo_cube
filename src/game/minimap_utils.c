@@ -16,20 +16,22 @@
  Fills a rectangle [px, px+w] x [py, py+h] with color on game->image.
  Clips to screen bounds.
 */
-void	draw_rect(t_game *game, int px, int py, t_mctx *c, uint32_t col)
+void	draw_rect(t_game *game, int mx, int my, t_mctx *c)
 {
-	int	x;
-	int	y;
-	int	w;
-	int	h;
+	int			x;
+	int			y;
+	int			px;
+	int			py;
+	uint32_t	col;
 
-	w = c->cz - 1;
-	h = c->cz - 1;
+	col = cell_color(game, mx, my);
+	px = c->ox + mx * c->cz;
+	py = c->oy + my * c->cz;
 	y = py;
-	while (y < py + h)
+	while (y < py + c->cz - 1)
 	{
 		x = px;
-		while (x < px + w)
+		while (x < px + c->cz - 1)
 		{
 			if (x >= 0 && x < SCREEN_W && y >= 0 && y < SCREEN_H)
 				mlx_put_pixel(game->image, x, y, col);

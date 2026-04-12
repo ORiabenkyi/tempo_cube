@@ -54,11 +54,7 @@ static void	draw_cells(t_game *game, t_mctx *c)
 		mx = 0;
 		while (mx < col_len)
 		{
-			draw_rect(game,
-				c->ox + mx * c->cz,
-				c->oy + my * c->cz,
-				c,
-				cell_color(game, mx, my));
+			draw_rect(game, mx, my,	c);
 			mx++;
 		}
 		my++;

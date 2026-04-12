@@ -44,19 +44,18 @@ static uint32_t	tex_pixel(mlx_texture_t *t, int x, int y, int door)
  Зчитує текстуру стіни у поточній вертикальній позиції та 
  малює піксель. Збільшує значення tex_pos на крок для наступного рядка.
 */
-static void	draw_wall_pixel(t_game *game, t_ray *ray, int x, int y,
-	double *tex_pos, double step, mlx_texture_t *tex)
+static void	draw_wall_pixel(t_game *game, t_ray *ray, int y, t_wcol *wc)
 {
 	int	tex_y;
 
-	tex_y = (int)*tex_pos;
+	tex_y = (int)*wc->tex_pos;
 	if (tex_y < 0)
 		tex_y = 0;
-	if (tex_y >= (int)tex->height)
-		tex_y = (int)tex->height - 1;
-	*tex_pos += step;
-	mlx_put_pixel(game->image, x, y,
-		tex_pixel(tex, ray->tex_x, tex_y, ray->is_door));
+	if (tex_y >= (int)wc->tex->height)
+		tex_y = (int)wc->tex->height - 1;
+	*wc->tex_pos += wc->step;
+	mlx_put_pixel(game->image, wc->x, y,
+		tex_pixel(wc->tex, ray->tex_x, tex_y, ray->is_door));
 }
 
 /*
@@ -67,14 +66,15 @@ static void	draw_wall_pixel(t_game *game, t_ray *ray, int x, int y,
 */
 static void	draw_column(t_game *game, t_ray *ray, int x)
 {
-	mlx_texture_t	*tex;
-	double			step;
-	double			tex_pos;
-	int				y;
+	t_wcol	wc;
+	double	tex_pos;
+	int		y;
 
-	tex = game->tex[ray->tex_idx];
-	step = (double)tex->height / ray->line_h;
-	tex_pos = (ray->draw_start - SCREEN_H / 2 + ray->line_h / 2) * step;
+	wc.x = x;
+	wc.tex = game->tex[ray->tex_idx];
+	wc.step = (double)wc.tex->height / ray->line_h;
+	tex_pos = (ray->draw_start - SCREEN_H / 2 + ray->line_h / 2) * wc.step;
+	wc.tex_pos = &tex_pos;
 	y = 0;
 	while (y < SCREEN_H)
 	{
@@ -83,7 +83,7 @@ static void	draw_column(t_game *game, t_ray *ray, int x)
 		else if (y > ray->draw_end)
 			mlx_put_pixel(game->image, x, y, game->map.floor_col);
 		else
-			draw_wall_pixel(game, ray, x, y, &tex_pos, step, tex);
+			draw_wall_pixel(game, ray, y, &wc);
 		y++;
 	}
 }

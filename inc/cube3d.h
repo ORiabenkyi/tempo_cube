@@ -99,6 +99,14 @@ typedef struct s_color
 	int	b;
 }	t_color;
 
+typedef struct s_wcol
+{
+	int				x;
+	double			step;
+	double			*tex_pos;
+	mlx_texture_t	*tex;
+}	t_wcol;
+
 typedef struct s_map
 {
 	char		*no;
@@ -255,7 +263,7 @@ t_door		*find_door(t_map *map, int x, int y);
 void		interact_door(t_game *game);
 
 /* minimap_utils.c */
-void		draw_rect(t_game *game, int px, int py, t_mctx *c, uint32_t col);
+void		draw_rect(t_game *game, int px, int py, t_mctx *c);
 void		draw_mini_player(t_game *game, int px, int py, uint32_t col);
 uint32_t	cell_color(t_game *game, int mx, int my);
 
