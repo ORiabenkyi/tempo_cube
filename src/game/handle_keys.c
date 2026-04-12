@@ -25,6 +25,12 @@ static void	handle_mouse(t_game *game)
 	int		delta;
 
 	mlx_get_mouse_pos(game->mlx, &cur_x, &cur_y);
+	if (!game->mouse_ready)
+	{
+		game->mouse_x = (int)cur_x;
+		game->mouse_ready = 1;
+		return ;
+	}
 	delta = (int)cur_x - game->mouse_x;
 	if (delta != 0)
 		rotate(game, delta * MOUSE_SENS);

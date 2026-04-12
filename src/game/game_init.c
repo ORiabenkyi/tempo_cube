@@ -42,9 +42,6 @@ static int	load_textures(t_game *game)
 */
 int	init_game(t_game *game)
 {
-	int32_t	mx;
-	int32_t	my;
-
 	game->mlx = mlx_init(SCREEN_W, SCREEN_H, "cub3D", false);
 	if (!game->mlx)
 		return (ft_error("MLX init failed"));
@@ -58,7 +55,5 @@ int	init_game(t_game *game)
 	init_player(game);
 	game->show_minimap = 0;
 	mlx_set_cursor_mode(game->mlx, MLX_MOUSE_DISABLED);
-	mlx_get_mouse_pos(game->mlx, &mx, &my);
-	game->mouse_x = (int)mx;
 	return (0);
 }

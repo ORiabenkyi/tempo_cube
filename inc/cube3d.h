@@ -199,6 +199,7 @@ typedef struct s_game
 	int				minimap_full;
 	int				show_info;
 	int				mouse_x;
+	int				mouse_ready;
 	mlx_image_t		*info_img;
 }	t_game;
 

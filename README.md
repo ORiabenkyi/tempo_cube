@@ -10,7 +10,7 @@ make
 ./cub3d maps/good/map.cub
 ```
 
-Controls: `W A S D` — move, `← →` / mouse — rotate, `E` — interact with door, `M` — toggle minimap, `ESC` — quit.
+Controls: `W A S D` — move, `← →` / mouse — rotate, `E` — interact with door, `I` — extra information, `M` — toggle minimap, `ESC` — quit.
 
 
 ## Resources
