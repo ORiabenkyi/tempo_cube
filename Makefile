@@ -4,7 +4,8 @@ MLX_LIB	= $(MLX_DIR)/build/libmlx42.a
 LIBFT_DIR = libs/libft
 LIBFT_LIB = $(LIBFT_DIR)/libft.a
 
-BONUS_DIR = bonus
+BONUS_DIR  = bonus
+BONUS_NAME = cub3d_bonus
 
 INC		 = -I./libs/libft/ -I./inc -I./libs/MLX42/include
 
@@ -74,16 +75,18 @@ $(NAME): $(OFILES)
 mlx: $(MLX_LIB)
 
 bonus:
-	cd $(BONUS_DIR)
-	make -C $(NAME)
+	$(MAKE) -C $(BONUS_DIR)
+	cp $(BONUS_DIR)/$(BONUS_NAME) .
 
 clean:
 	$(RM) $(OFILES)
 
 fclean: clean
 	$(RM) $(NAME)
+	$(RM) $(BONUS_NAME)
 	$(RM) $(MLX_DIR)
 	$(RM) $(LIBFT_DIR)
+	$(MAKE) -C $(BONUS_DIR) fclean
 
 re: fclean all
 
