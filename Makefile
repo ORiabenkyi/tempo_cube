@@ -76,7 +76,7 @@ mlx: $(MLX_LIB)
 
 bonus:
 	$(MAKE) -C $(BONUS_DIR)
-	cp $(BONUS_DIR)/$(BONUS_NAME) .
+	cp -f $(BONUS_DIR)/$(BONUS_NAME) $(NAME)
 
 clean:
 	$(RM) $(OFILES)
@@ -91,3 +91,5 @@ fclean: clean
 re: fclean all
 
 full: fclean all
+
+.PHONY: all bonus clean fclean re full mlx
