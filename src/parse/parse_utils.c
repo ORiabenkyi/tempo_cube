@@ -81,7 +81,11 @@ int	is_map_line(char *line)
 		return (0);
 	while (*line)
 	{
+		#if BONUS
 		if (!ft_strchr("01DNSEW \t", *line))
+		#else
+		if (!ft_strchr("01NSEW \t", *line))
+		#endif
 			return (0);
 		line++;
 	}

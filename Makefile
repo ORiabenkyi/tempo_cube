@@ -12,6 +12,8 @@ CFLAGS	 = -Wall -Wextra -Werror -g3
 MLXFLAGS = -ldl -lglfw -pthread -lm
 RM		 = rm -rf
 
+BONUS_FLAG = -DBONUS=0
+
 CFILES =	src/cube3d.c \
 			src/parse/parse.c \
 			src/parse/check_extension.c \
@@ -67,12 +69,15 @@ $(LIBFT_LIB):
 	$(CC) $(CFLAGS) $(INC) -c $< -o $@
 
 $(NAME): $(OFILES)
-	$(CC) $(CFLAGS) $(OFILES) $(LIBFT_LIB) $(MLX_LIB) $(MLXFLAGS) -o $(NAME)
+	$(CC) $(CFLAGS) $(BOBUS_FLAG) $(OFILES) $(LIBFT_LIB) $(MLX_LIB) $(MLXFLAGS) -o $(NAME)
+
+mlx: $(MLX_LIB)
+
+bonus:	BOBUS_FLAG = -DBONUS=1
+bonus:	fclean all
 
 clean:
 	$(RM) $(OFILES)
-
-mlx: $(MLX_LIB)
 
 fclean: clean
 	$(RM) $(NAME)
