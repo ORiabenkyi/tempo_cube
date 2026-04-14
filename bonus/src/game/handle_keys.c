@@ -6,7 +6,7 @@
 /*   By: oriabenk <oriabenk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/12 10:25:05 by oriabenk          #+#    #+#             */
-/*   Updated: 2026/04/14 12:12:22 by oriabenk         ###   ########.fr       */
+/*   Updated: 2026/04/14 11:53:26 by oriabenk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,21 @@
 */
 static void	handle_mouse(t_game *game)
 {
-	(void) game;
+	int32_t	cur_x;
+	int32_t	cur_y;
+	int		delta;
+
+	mlx_get_mouse_pos(game->mlx, &cur_x, &cur_y);
+	if (game->mouse_ready < 3)
+	{
+		game->mouse_x = (int)cur_x;
+		game->mouse_ready++;
+		return ;
+	}
+	delta = (int)cur_x - game->mouse_x;
+	if (delta != 0)
+		rotate(game, delta * MOUSE_SENS);
+	game->mouse_x = (int)cur_x;
 }
 
 /*
@@ -28,7 +42,17 @@ static void	handle_mouse(t_game *game)
 */
 static void	handle_toggles(t_game *game)
 {
-	(void) game;
+	int	m_down;
+	int	i_down;
+
+	m_down = mlx_is_key_down(game->mlx, MLX_KEY_M);
+	if (m_down && !game->key_m_prev)
+		game->show_minimap = !game->show_minimap;
+	game->key_m_prev = m_down;
+	i_down = mlx_is_key_down(game->mlx, MLX_KEY_I);
+	if (i_down && !game->key_i_prev)
+		game->show_info = !game->show_info;
+	game->key_i_prev = i_down;
 }
 
 /*

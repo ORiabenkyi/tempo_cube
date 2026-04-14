@@ -6,7 +6,7 @@
 /*   By: oriabenk <oriabenk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/12 10:24:02 by oriabenk          #+#    #+#             */
-/*   Updated: 2026/04/14 12:10:54 by oriabenk         ###   ########.fr       */
+/*   Updated: 2026/04/14 11:52:33 by oriabenk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,7 @@ int	is_map_line(char *line)
 		return (0);
 	while (*line)
 	{
-		if (!ft_strchr("01NSEW \t", *line))
+		if (!ft_strchr("01DNSEW \t", *line))
 			return (0);
 		line++;
 	}

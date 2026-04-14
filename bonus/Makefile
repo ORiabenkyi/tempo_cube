@@ -4,11 +4,9 @@ MLX_LIB	= $(MLX_DIR)/build/libmlx42.a
 LIBFT_DIR = libs/libft
 LIBFT_LIB = $(LIBFT_DIR)/libft.a
 
-BONUS_DIR = bonus
-
 INC		 = -I./libs/libft/ -I./inc -I./libs/MLX42/include
 
-NAME	 = cub3d
+NAME	 = cub3d_bonus
 CC		 = cc
 CFLAGS	 = -Wall -Wextra -Werror -g3
 MLXFLAGS = -ldl -lglfw -pthread -lm
@@ -73,9 +71,8 @@ $(NAME): $(OFILES)
 
 mlx: $(MLX_LIB)
 
-bonus:
-	cd $(BONUS_DIR)
-	make -C $(NAME)
+bonus: 
+	make -C $(BONUS_DIR)
 
 clean:
 	$(RM) $(OFILES)
