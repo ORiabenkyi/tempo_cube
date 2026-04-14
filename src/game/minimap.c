@@ -6,7 +6,7 @@
 /*   By: oriabenk <oriabenk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/12 10:24:53 by oriabenk          #+#    #+#             */
-/*   Updated: 2026/04/12 15:11:13 by oriabenk         ###   ########.fr       */
+/*   Updated: 2026/04/14 11:46:24 by oriabenk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ static void	draw_cells(t_game *game, t_mctx *c)
 		mx = 0;
 		while (mx < col_len)
 		{
-			draw_rect(game, mx, my,	c);
+			draw_rect(game, mx, my, c);
 			mx++;
 		}
 		my++;

@@ -6,7 +6,7 @@
 /*   By: oriabenk <oriabenk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/12 10:23:55 by oriabenk          #+#    #+#             */
-/*   Updated: 2026/04/12 11:49:22 by oriabenk         ###   ########.fr       */
+/*   Updated: 2026/04/14 11:52:04 by oriabenk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,11 +58,7 @@ static int	check_chars_and_player(t_map *map)
 		while (map->grid[y][x])
 		{
 			c = map->grid[y][x];
-			#if BONUS
 			if (!ft_strchr("01DNSEW ", c))
-			#else
-			if (!ft_strchr("01NSEW ", c))
-			#endif
 				return (ft_error(ERR_CHAR));
 			if (ft_strchr("NSEW", c))
 				player_count += feel_player(map, x, y, c);

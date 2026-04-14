@@ -6,7 +6,7 @@
 /*   By: oriabenk <oriabenk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/12 10:25:05 by oriabenk          #+#    #+#             */
-/*   Updated: 2026/04/12 10:31:33 by oriabenk         ###   ########.fr       */
+/*   Updated: 2026/04/14 11:53:26 by oriabenk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,6 @@
 */
 static void	handle_mouse(t_game *game)
 {
-	#if BONUS
 	int32_t	cur_x;
 	int32_t	cur_y;
 	int		delta;
@@ -36,9 +35,6 @@ static void	handle_mouse(t_game *game)
 	if (delta != 0)
 		rotate(game, delta * MOUSE_SENS);
 	game->mouse_x = (int)cur_x;
-	#else
-	(void)game;
-	#endif
 }
 
 /*
@@ -46,7 +42,6 @@ static void	handle_mouse(t_game *game)
 */
 static void	handle_toggles(t_game *game)
 {
-	#if BONUS
 	int	m_down;
 	int	i_down;
 
@@ -58,9 +53,6 @@ static void	handle_toggles(t_game *game)
 	if (i_down && !game->key_i_prev)
 		game->show_info = !game->show_info;
 	game->key_i_prev = i_down;
-	#else
-	(void)game;
-	#endif
 }
 
 /*
@@ -78,9 +70,7 @@ Mouse X        → rotate left / right
 void	handle_keys(t_game *game)
 {
 	mlx_t	*mlx;
-	#if BONUS
 	int		e_down;
-	#endif
 
 	mlx = game->mlx;
 	if (mlx_is_key_down(mlx, MLX_KEY_ESCAPE))
@@ -98,11 +88,9 @@ void	handle_keys(t_game *game)
 	if (mlx_is_key_down(mlx, MLX_KEY_RIGHT))
 		rotate(game, ROT_SPEED);
 	handle_mouse(game);
-	#if BONUS
 	e_down = mlx_is_key_down(mlx, MLX_KEY_E);
 	if (e_down && !game->key_e_prev)
 		interact_door(game);
 	game->key_e_prev = e_down;
-	#endif
 	handle_toggles(game);
 }
