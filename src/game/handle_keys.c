@@ -25,10 +25,10 @@ static void	handle_mouse(t_game *game)
 	int		delta;
 
 	mlx_get_mouse_pos(game->mlx, &cur_x, &cur_y);
-	if (!game->mouse_ready)
+	if (game->mouse_ready < 3)
 	{
 		game->mouse_x = (int)cur_x;
-		game->mouse_ready = 1;
+		game->mouse_ready++;
 		return ;
 	}
 	delta = (int)cur_x - game->mouse_x;
